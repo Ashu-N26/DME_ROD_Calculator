@@ -1,37 +1,20 @@
-# DME & ROD Calculator
+# DME & ROD CDFA Tool (Client-only)
 
-This project computes slant distances (DME), horizontal distances between waypoints, required gradients and rates of descent (ROD) for approach procedures (ILS, RNAV, VOR, NDB).
+This is a client-side CDFA (continuous descent final approach) calculator. All math runs in the browser (no backend). The app computes DME/ALT profiles and ROD tables and supports LNAV waypoint mode.
 
-## Run locally (dev)
+## How to run locally
+1. cd frontend
+2. npm install
+3. npm run dev
+4. Open http://localhost:5173
 
-1. Start backend:
+## Deploy to GitHub Pages (automatic)
+Push to `main`. GitHub Actions (gh-pages workflow) builds and publishes `frontend/dist` to the `gh-pages` branch.
 
-```bash
-cd backend
-python app.py
-```
+In repository settings → Pages, select `gh-pages` branch as site source. The site will be available at `https://<username>.github.io/<repo>/`.
 
-2. Start frontend:
+## Notes
+- All inputs are in feet and nautical miles.
+- Published altitude is rounded up to next 10 ft.
+- Threshold target altitude uses `THR elevation + 50 ft`.
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-## API
-POST /api/compute with JSON:
-
-```
-{
-  "from": {"lat":.., "lon":.., "alt_ft":..},
-  "to": {"lat":.., "lon":.., "alt_ft":..},
-  "groundspeed_kts": 140
-}
-```
-
-## Notes on logic
-- Horizontal distance uses haversine (great-circle) and returns NM.
-- Slant (DME) uses straight-line distance combining horizontal NM and vertical ft converted to NM.
-- Required gradient computed as ft per NM and angle in degrees.
-- ROD uses the formula: ROD (ft/min) = GS(kts) * tan(angle) * 6076.12/60.
